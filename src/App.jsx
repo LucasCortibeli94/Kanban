@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect, useState, useMemo, useRef } from 'react';
 import { DndContext, useDraggable, useDroppable, DragOverlay } from '@dnd-kit/core';
-import { CSS } from '@dnd-kit/utilities';
 import { createPortal } from 'react-dom';
 
 // --- CONSTANTES DO DOMÍNIO ---
@@ -127,7 +126,7 @@ const Navbar = ({ onOpenModal }) => {
 
   return (
     <nav className="bg-white shadow-md p-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-20">
-      <h1 className="text-2xl font-bold text-gray-800">Kanban Board Online</h1>
+      <h1 className="text-2xl font-bold text-gray-800">Kanban Board</h1>
       <div className="flex flex-wrap items-center gap-2">
         <select name="responsibleId" value={filters.responsibleId} onChange={handleFilterChange} className="p-2 border rounded-md bg-gray-50 text-sm"><option value="">Todos Responsáveis</option>{PEOPLE.map(p => <option key={p.id} value={p.id}>{p.nome}</option>)}</select>
         <select name="status" value={filters.status} onChange={handleFilterChange} className="p-2 border rounded-md bg-gray-50 text-sm"><option value="">Todos Status</option>{STATUS_DETALHADO.map(s => <option key={s} value={s}>{s}</option>)}</select>
@@ -150,7 +149,6 @@ const TaskCard = ({ task, onEdit, onDelete }) => {
   });
 
   const style = {
-    // CORREÇÃO: O card original fica invisível ao arrastar
     visibility: isDragging ? 'hidden' : 'visible',
   };
 
@@ -163,11 +161,11 @@ const TaskCard = ({ task, onEdit, onDelete }) => {
   }, []);
 
   return (
-    <div ref={setNodeRef} style={style} className={`bg-white p-4 mb-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col ${getPriorityClass(task.priority)}`}>
+    <div ref={setNodeRef} style={style} className={`bg-blue-100 text-gray-800 p-4 mb-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col ${getPriorityClass(task.priority)}`}>
       <div className="flex justify-between items-start">
-        <h3 className="font-bold text-gray-800 pr-2 cursor-grab flex-grow" {...attributes} {...listeners}>{task.title}</h3>
+        <h3 className="font-bold pr-2 cursor-grab flex-grow" {...attributes} {...listeners}>{task.title}</h3>
         <div className="relative" ref={menuRef}>
-          <button onClick={() => setMenuOpen(prev => !prev)} className="text-gray-500 hover:text-gray-800 p-1 rounded-full flex-shrink-0">
+          <button onClick={() => setMenuOpen(prev => !prev)} className="text-gray-500 hover:text-gray-900 p-1 rounded-full flex-shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg>
           </button>
           {menuOpen && (
@@ -178,15 +176,15 @@ const TaskCard = ({ task, onEdit, onDelete }) => {
           )}
         </div>
       </div>
-      <p className="text-sm text-gray-600 my-2">{task.description}</p>
-      <div className="flex items-center justify-between text-xs text-gray-500 mt-3">
+      <p className="text-sm my-2">{task.description}</p>
+      <div className="flex items-center justify-between text-xs mt-3">
         <span className={`px-2 py-1 rounded-full font-semibold ${getStatusClass(task.status)}`}>{task.status}</span>
         <span className="font-semibold">{task.responsible}</span>
       </div>
       <div className="flex flex-wrap gap-1 mt-3">
-        {task.tags.map((tag, index) => <span key={index} className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">{tag}</span>)}
+        {task.tags.map((tag, index) => <span key={index} className="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full">{tag}</span>)}
       </div>
-      <div className="text-xs text-gray-400 mt-3 pt-2 border-t border-gray-200 flex justify-between">
+      <div className="text-xs text-gray-500 mt-3 pt-2 border-t border-blue-200 flex justify-between">
         <span>Prazo: {formatDate(task.dueDate)}</span>
         <span>Criado: {formatDate(task.createdAt)}</span>
       </div>
@@ -198,8 +196,8 @@ const TaskCard = ({ task, onEdit, onDelete }) => {
 const Column = ({ title, tasks, onEdit, onDelete }) => {
   const { setNodeRef, isOver } = useDroppable({ id: title });
   return (
-    <div ref={setNodeRef} className={`bg-gray-100 rounded-lg p-4 w-full md:w-1/3 flex-shrink-0 transition-colors duration-300 ${isOver ? 'bg-blue-100' : ''}`}>
-      <h2 className="text-lg font-bold text-gray-700 mb-4 tracking-wider uppercase">{title} ({tasks.length})</h2>
+    <div ref={setNodeRef} className={`bg-gray-800 rounded-lg p-4 w-full md:w-1/3 flex-shrink-0 transition-colors duration-300 ${isOver ? 'bg-blue-900' : ''}`}>
+      <h2 className="text-lg font-bold text-white mb-4 tracking-wider uppercase">{title} ({tasks.length})</h2>
       <div className="space-y-4 h-[calc(100vh-250px)] overflow-y-auto pr-2">
         {tasks.map(task => <TaskCard key={task.id} task={task} onEdit={onEdit} onDelete={onDelete} />)}
         {tasks.length === 0 && <p className="text-sm text-gray-400 text-center mt-8">Nenhuma tarefa aqui.</p>}
@@ -224,7 +222,7 @@ const Board = ({ onEdit, onDelete }) => {
   }, [tasks, filters]);
 
   return (
-    <main className="p-4 md:p-8 bg-gray-50 flex-grow">
+    <main className="p-4 md:p-8 bg-gray-200 flex-grow">
       <div className="flex flex-col md:flex-row gap-6">
         {COLUNAS.map(column => <Column key={column} title={column} tasks={filteredTasks.filter(task => task.column === column)} onEdit={onEdit} onDelete={onDelete} />)}
       </div>
@@ -302,13 +300,12 @@ export default function App() {
   
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <div className="flex flex-col h-screen font-sans">
+        <div className="flex flex-col h-screen font-sans bg-gray-200">
             <Navbar onOpenModal={handleOpenModal} />
             <Board onEdit={handleOpenModal} onDelete={handleOpenDeleteModal} />
             <TaskModal isOpen={isModalOpen} onClose={handleCloseModal} taskToEdit={taskToEdit} />
             <ConfirmDeleteModal isOpen={isDeleteModalOpen} onClose={handleCloseDeleteModal} onConfirm={handleDeleteConfirm} task={taskToDelete} />
         
-            {/* CORREÇÃO: Overlay para o "fantasma" do card */}
             {createPortal(
                 <DragOverlay>
                     {activeTask ? <TaskCard task={activeTask} /> : null}
