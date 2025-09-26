@@ -196,7 +196,7 @@ const TaskCard = ({ task, onEdit, onDelete }) => {
 const Column = ({ title, tasks, onEdit, onDelete }) => {
   const { setNodeRef, isOver } = useDroppable({ id: title });
   return (
-    <div ref={setNodeRef} className={`bg-gray-800 rounded-lg p-4 w-full md:w-1/3 flex-shrink-0 transition-colors duration-300 ${isOver ? 'bg-blue-900' : ''}`}>
+    <div ref={setNodeRef} className={`bg-gray-800 rounded-lg p-4 w-full md:flex-1 transition-colors duration-300 ${isOver ? 'bg-blue-900' : ''}`}>
       <h2 className="text-lg font-bold text-white mb-4 tracking-wider uppercase">{title} ({tasks.length})</h2>
       <div className="space-y-4 h-[calc(100vh-250px)] overflow-y-auto pr-2">
         {tasks.map(task => <TaskCard key={task.id} task={task} onEdit={onEdit} onDelete={onDelete} />)}
